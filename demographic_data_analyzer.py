@@ -1,46 +1,43 @@
 import pandas as pd
 
+#oi quem estiver corrigindo, deixei uns comentários aqui no código pra que eu possa visitar o código e consultar os comandos quando necessário.
 
 def calculate_demographic_data(print_data=True):
-    # Read data from file
-    df = None
+    data = pd.read_csv('adult.data.csv')
+    df = data
+    # essa parte lê o arquivo da base de dados e chama a função de cálculos demográficos.
 
-    # How many of each race are represented in this dataset? This should be a Pandas series with race names as the index labels.
-    race_count = None
+    # imprime quantas pessoas de cada raça estão no dataset e retorna um dicionário com os resultados
+    race_count = df['race'].value_counts()
 
-    # What is the average age of men?
-    average_age_men = None
+    # essa parte calcula a média de idade dos homens no dataset e retorna o resultado arredondado para uma casa decimal
+    average_age_men = round(df[df['sex']== 'Male']['age'].mean(), 1)
 
-    # What is the percentage of people who have a Bachelor's degree?
-    percentage_bachelors = None
+    # essa parte calcula a porcentagem (*100) de pessoas com diploma de bacharelado e retorna o resultado arredondado para uma casa decimal (1)
+    percentage_bachelors = round((df['education'] == 'Bachelors').mean() * 100, 1)
 
-    # What percentage of people with advanced education (`Bachelors`, `Masters`, or `Doctorate`) make more than 50K?
-    # What percentage of people without advanced education make more than 50K?
+    # essa parte calcula a porcentagem de pessoas com educação superior que ganham mais de 50K e retorna o resultado arredondado para uma casa decimal (1)
+    advanced = ['Bachelors', 'Masters', 'Doctorate']
+    higher_education = df[df['education'].isin(advanced)]
+    lower_education = df[~df['education'].isin(advanced)]
 
-    # with and without `Bachelors`, `Masters`, or `Doctorate`
-    higher_education = None
-    lower_education = None
+    higher_education_rich = round((higher_education['salary'] == '>50K').mean() * 100, 1)
+    lower_education_rich = round((lower_education['salary'] == '>50K').mean() * 100, 1)
 
-    # percentage with salary >50K
-    higher_education_rich = None
-    lower_education_rich = None
+    # essa parte encontra o número mínimo de horas trabalhadas por semana no dataset e retorna o resultado
+    min_work_hours = df['hours-per-week'].min()
 
-    # What is the minimum number of hours a person works per week (hours-per-week feature)?
-    min_work_hours = None
+    # essa parte calcula a porcentagem de pessoas que trabalham o número mínimo de horas por semana e ganham mais de 50K, retornando o resultado arredondado para uma casa decimal (1)
+    num_min_workers = df[df['hours-per-week'] == min_work_hours]
+    rich_percentage = round((num_min_workers['salary'] == '>50K').mean() * 100, 1)
 
-    # What percentage of the people who work the minimum number of hours per week have a salary of >50K?
-    num_min_workers = None
+    # essa parte encontra o país com a maior porcentagem de pessoas que ganham mais de 50K e retorna o nome do país e a porcentagem arredondada para uma casa decimal (1)
+    country_percentages = (df[df['salary'] == '>50K']['native-country'].value_counts() / df['native-country'].value_counts()) * 100
+    highest_earning_country = country_percentages.idxmax()
+    highest_earning_country_percentage = round(country_percentages.max(), 1)
 
-    rich_percentage = None
-
-    # What country has the highest percentage of people that earn >50K?
-    highest_earning_country = None
-    highest_earning_country_percentage = None
-
-    # Identify the most popular occupation for those who earn >50K in India.
-    top_IN_occupation = None
-
-    # DO NOT MODIFY BELOW THIS LINE
+    # essa parte encontra a ocupação mais comum entre pessoas da Índia que ganham mais de 50K e retorna o nome da ocupação
+    top_IN_occupation = df[(df['native-country'] == 'India') & (df['salary'] == '>50K')]['occupation'].value_counts().idxmax()
 
     if print_data:
         print("Number of each race:\n", race_count) 

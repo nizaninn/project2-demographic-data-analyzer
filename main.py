@@ -1,9 +1,9 @@
-# This entrypoint file to be used in development. Start by reading README.md
+# comandos necessários para rodar o código
 import demographic_data_analyzer
 from unittest import main
 
-# Test your function by calling it here
+# chama a função declarada no arquivo demographic_data_analyzer.py para imprimir os resultados
 demographic_data_analyzer.calculate_demographic_data()
 
-# Run unit tests automatically
+# dsse comando vai rodar os testes automaticamente
 main(module='test_module', exit=False)
